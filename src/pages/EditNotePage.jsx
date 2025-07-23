@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link as RouterLink } from "react-router";
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import Container from "@mui/material/Container";
@@ -8,6 +9,13 @@ import Select from "@mui/material/Select";
 import Editor from "react-simple-wysiwyg";
 
 function EditNotePage() {
+  /*
+    rule for form fields state: one state for one field
+  */
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [content, setContent] = useState("Welcome to <b>Forward College</b>");
+
   return (
     <Container
       maxWidth="md"
@@ -15,7 +23,7 @@ function EditNotePage() {
         py: "60px",
       }}
     >
-      <Typography variant="h4">Edit Note</Typography>
+      <Typography variant="h3">Edit Note</Typography>
       <Paper
         elevation={3}
         sx={{
@@ -23,13 +31,22 @@ function EditNotePage() {
           mt: "20px",
         }}
       >
-        <TextField fullWidth id="note_title" label="Title" variant="outlined" />
+        <TextField
+          fullWidth
+          id="note_title"
+          label="Title"
+          variant="outlined"
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+        />
         <FormControl fullWidth sx={{ mt: "20px" }}>
           <InputLabel id="note_category_label">Category</InputLabel>
           <Select
             labelId="note_category_label"
             id="note_category"
             label="Category"
+            value={category}
+            onChange={(event) => setCategory(event.target.value)}
           >
             <MenuItem value={"Personal"}>Personal</MenuItem>
             <MenuItem value={"Work"}>Work</MenuItem>
@@ -42,6 +59,10 @@ function EditNotePage() {
           </Typography>
           <Editor
             containerProps={{ style: { height: "400px" } }}
+            value={content}
+            onChange={(event) => {
+              setContent(event.target.value);
+            }}
           />
         </Box>
         <Box
@@ -55,7 +76,9 @@ function EditNotePage() {
           <Button color="primary" variant="contained">
             Save Note
           </Button>
-          <Button variant="outlined">Cancel</Button>
+          <Button component={RouterLink} to="/" variant="outlined">
+            Cancel
+          </Button>
         </Box>
       </Paper>
     </Container>

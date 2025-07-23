@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 import AppBar from "./components/AppBar";
+import { Toaster, toast } from "sonner";
 
 // import all the pages
 import HomePage from "./pages/HomePage";
@@ -24,6 +25,7 @@ function App() {
         <Route path="/categories" element={<CategoriesPage />} />
         <Route path="/n/1" element={<EditNotePage />} />
       </Routes>
+      <Toaster position="top-right" theme="dark" />
     </Router>
   );
 }
