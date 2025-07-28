@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link as RouterLink } from "react-router";
+import { Link as RouterLink, useNavigate } from "react-router";
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import Container from "@mui/material/Container";
 import InputLabel from "@mui/material/InputLabel";
@@ -11,74 +11,62 @@ import { nanoid } from "nanoid";
 import { toast } from "sonner";
 
 /*
+   notes structure:
   [
-    {
-      id: ""// nanoid
-      title: "New Note"
-      category: "hdahr09" //nanoid from category
-      content: "This is my note"
-    },
-    {
-      id: ""// nanoid
-      title: "New Note 2"
-      category: "h52gahr09" //nanoid from category
-      content: "This is my note 2"
-    }
+     {
+         id: "denfne8j3m_ud83", // nanoid
+         title: "New note",
+         category: "nmrj_kj7743", // category id from categories
+         content: "vanakam to <b>forward college</b>",
+         updatedAt: 1736489494585 (timestamp) 
+      }
   ]
 */
 
 function AddNewPage() {
-  // 1 load categories
-  const categoriesInLocalStorage = localStorage.getItem("categories");
+  // setup useNavigate
+  const navigate = useNavigate();
+  // 1. load the categories data from local storage
+  const dataInLocalStorage = localStorage.getItem("categories");
   // 2. create a state to store the categories data from local storage
   const [categories, setCategories] = useState(
-    categoriesInLocalStorage ? JSON.parse(categoriesInLocalStorage) : []
+    dataInLocalStorage ? JSON.parse(dataInLocalStorage) : []
   );
-  //3 load the notes data from local storage
-  const notesInLocalStorage = localStorage.getItem("notes");
-  //4 create a state to store the notes data from local storage
+  // 3. load the notes data from local storage
+  const notesLocalStorage = localStorage.getItem("notes");
+  // 4. create a state to store the notes data from local storage
   const [notes, setNotes] = useState(
-    notesInLocalStorage ? JSON.parse(notesInLocalStorage) : []
+    notesLocalStorage ? JSON.parse(notesLocalStorage) : []
   );
-
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [content, setContent] = useState("Welcome to <b>Forward College</b>");
 
   const handleAddNew = () => {
-    // 6. check for error
+    // 6. check for error - make sure all the fields are fill up
     if (title === "" || content === "" || category === "") {
-      toast("Please fill in all the fields");
+      toast("Please fill in the all the fields");
     } else {
-      // 4b. add the new note to the state
+      // 7. add the new note data into the notes state
       const updatedNotes = [
         ...notes,
         {
           id: nanoid(),
           title: title,
-          category: category,
           content: content,
-          updatedAt: new Date().valueOf() // timestamp - seconds count since 1970 jan 1
+          category: category,
+          updatedAt: new Date().valueOf(), // timestamp - seconds count since 1970 jan 1
         },
       ];
-      // 7. add the new note data into the notes state
+      // // 8. update the notes in local storage
       setNotes(updatedNotes);
-      // show notification of success message
-      toast("New Category has been added");
-      // reset the field
-      setTitle("");
-      setCategory("");
-      setContent("");
-      // 4c. update the local storage with the updated categories
       localStorage.setItem("notes", JSON.stringify(updatedNotes));
+      // 9. show success message
+      toast("New note added");
+      // 10. redirect back to home page
+      navigate("/");
     }
-    // 8. update the notes in local storage
-    localStorage.setItem("categories", JSON.stringify(updatedCategories));
   };
-
-  function onChange(e) {
-    setContent(e.target.value);
-  }
 
   return (
     <Container
@@ -87,7 +75,7 @@ function AddNewPage() {
         py: "60px",
       }}
     >
-      <Typography variant="h4">Add New Note</Typography>
+      <Typography variant="h3">Add New Note</Typography>
       <Paper
         elevation={3}
         sx={{
@@ -109,12 +97,13 @@ function AddNewPage() {
             labelId="note_category_label"
             id="note_category"
             label="Category"
-            value={category}
             onChange={(event) => setCategory(event.target.value)}
           >
-            {/* 3. load categories using .map , value pass in as category id*/}
+            {/* 5. load the categories using .map - value pass in as category.id */}
             {categories.map((category) => (
-              <MenuItem value={category.id}>{category.label}</MenuItem>
+              <MenuItem key={category.id} value={category.id}>
+                {category.label}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -125,7 +114,9 @@ function AddNewPage() {
           <Editor
             containerProps={{ style: { height: "400px" } }}
             value={content}
-            onChange={onChange}
+            onChange={(event) => {
+              setContent(event.target.value);
+            }}
           />
         </Box>
         <Box

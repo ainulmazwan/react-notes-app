@@ -18,15 +18,17 @@ import IconButton from "@mui/material/IconButton";
 
 /*
   Requirements:
-  -data will be stored in the local storage
-  -state for managing the categories
+  - data will be stored in the local storage
+  - state for managing the categories
   - Add new category
-  - Update category
-  - Delete category
+  - update category
+  - delete category
+  - explode yourself
 
   [
-    {id: 65073, label: "Personal"},
-    {id: 27890, label: "Work"}
+    { id: 684847, label: "Personal" },
+    { id: 8489, label: "Work" },
+    { id: 886, label: "Idea" }
   ]
 */
 
@@ -35,13 +37,12 @@ function CategoriesPage() {
   const dataInLocalStorage = localStorage.getItem("categories");
   // 2. assign the local storage to the state (if data is empty, pass in empty array)
   const [categories, setCategories] = useState(
-    JSON.parse(dataInLocalStorage || [])
+    dataInLocalStorage ? JSON.parse(dataInLocalStorage) : []
   );
-  // 3. declare the categories state to manage categories list
+  // 3. state for the add new category field
   const [label, setLabel] = useState("");
-  // 4. state for the add new category field
 
-  //4. function to add new category into the state and also save it to local storage
+  // 4. function to add new category into the state and also save it into local storage
   const handleAddNew = () => {
     // 4a. make sure the field is not empty, show error
     if (label === "") {
@@ -83,7 +84,7 @@ function CategoriesPage() {
           return cat;
         })
       );
-      // show notification
+      // show notification of success message
       toast("Category has been updated");
       // 5c. update the local storage with the updated categories
       localStorage.setItem("categories", JSON.stringify(updatedCategories));
@@ -108,6 +109,7 @@ function CategoriesPage() {
       localStorage.setItem("categories", JSON.stringify(updatedCategories));
     }
   };
+
   return (
     <>
       <Container sx={{ py: 6 }}>
@@ -120,7 +122,6 @@ function CategoriesPage() {
           }}
         >
           <InputLabel>Add New Category</InputLabel>
-
           <Box
             sx={{
               display: "flex",
